@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: zookeeper1
+  name: zookeeper1-service
+  namespace: kafka
+spec:
+  type: NodePort
+  ports:
+    - name: zookeeper-port
+      port: 2181
+      nodePort: 30181
+      targetPort: 2181
+  selector:
+    app: zookeeper1
+---    
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: zookeeper2
+  name: zookeeper2-service
+  namespace: kafka
+spec:
+  type: NodePort
+  ports:
+    - name: zookeeper-port
+      port: 2181
+      nodePort: 30182
+      targetPort: 2182
+  selector:
+    app: zookeeper2
+---    
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: zookeeper3
+  name: zookeeper3-service
+  namespace: kafka
+spec:
+  type: NodePort
+  ports:
+    - name: zookeeper-port
+      port: 2181
+      nodePort: 30183
+      targetPort: 2183
+  selector:
+    app: zookeeper3    

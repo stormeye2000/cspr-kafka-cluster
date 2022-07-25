@@ -1,0 +1,101 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: zookeeper1
+  name: zookeeper1
+  namespace: kafka
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zookeeper1
+  template:
+    metadata:
+      labels:
+        app: zookeeper1
+    spec:
+      containers:
+      - name: zookeeper1
+        image: wurstmeister/zookeeper
+        ports:
+        - containerPort: 2181
+        - containerPort: 2888
+        - containerPort: 3888
+        env:
+        - name: ZOOKEEPER_ID
+          value: "1"
+        - name: ZOOKEEPER_SERVER_1
+          value: zoo1
+        - name: ZOOKEEPER_SERVER_2
+          value: zoo2        
+        - name: ZOOKEEPER_SERVER_3
+          value: zoo3
+---            
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: zookeeper2
+  name: zookeeper2
+  namespace: kafka
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zookeeper2
+  template:
+    metadata:
+      labels:
+        app: zookeeper2
+    spec:
+      containers:
+      - name: zookeeper2
+        image: wurstmeister/zookeeper
+        ports:
+        - containerPort: 2181
+        - containerPort: 2888
+        - containerPort: 3888
+        env:
+        - name: ZOOKEEPER_ID
+          value: "2"
+        - name: ZOOKEEPER_SERVER_1
+          value: zoo1
+        - name: ZOOKEEPER_SERVER_2
+          value: zoo2
+        - name: ZOOKEEPER_SERVER_3
+          value: zoo3          
+---            
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: zookeeper3
+  name: zookeeper3
+  namespace: kafka
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zookeeper3
+  template:
+    metadata:
+      labels:
+        app: zookeeper3
+    spec:
+      containers:
+      - name: zookeeper3
+        image: wurstmeister/zookeeper
+        ports:
+        - containerPort: 2181
+        - containerPort: 2888
+        - containerPort: 3888
+        env:
+        - name: ZOOKEEPER_ID
+          value: "3"
+        - name: ZOOKEEPER_SERVER_1
+          value: zoo1
+        - name: ZOOKEEPER_SERVER_2
+          value: zoo2          
+        - name: ZOOKEEPER_SERVER_3
+          value: zoo3          
