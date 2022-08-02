@@ -6,7 +6,7 @@ The following scripts provide a highly available resilient Zookeeper/Kafka clust
 
 Zookeeper runs with three replica pods, which is enough to provide a quorum, if one fails, a new leader will be elected whilst the failed pod is replaced. This is enough for this implementation.
 
-Kafka also runs with three replicas, which again provides a quorom if one replica fails. As the project matures I expect to use more replicas and to also change some of the Kafka start-up server properties
+Kafka also runs with three replicas (this will be increased in production). 
 
 To install the scripts, clone the project and do the following:
 
