@@ -64,7 +64,7 @@ spec:
                 topologyKey: "kubernetes.io/hostname"
       terminationGracePeriodSeconds: 300
       containers:
-        - name: k8skafka
+        - name: storm-kafka
           imagePullPolicy: Always
           image: "stormeye2000/kafka"
           resources:
@@ -86,7 +86,7 @@ spec:
           command:
             - /bin/sh
             - -c
-            - "exec ./kafka-server-start.sh /usr/local/kafka/config/server.properties --override broker.id=${HOSTNAME##*-} \
+            - "exec ./bin/kafka-server-start.sh /kafka/config/server.properties --override broker.id=${HOSTNAME##*-} \
             --override listeners=INSIDE://0.0.0.0:9093,OUTSIDE://0.0.0.0:9092 \
             --override advertised.listeners=INSIDE://${KAFKA_POD_IP}:9092,OUTSIDE://${KAFKA_POD_IP}:9093 \
             --override inter.broker.listener.name=INSIDE \
