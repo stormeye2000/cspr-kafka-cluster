@@ -110,7 +110,7 @@ spec:
             --override log.roll.jitter.hours=0 \
             --override log.segment.bytes=1073741824 \
             --override log.segment.delete.delay.ms=60000 \
-            --override message.max.bytes=1000012 \
+            --override message.max.bytes=10485880 \
             --override min.insync.replicas=1 \
             --override num.io.threads=8 \
             --override num.network.threads=3 \
@@ -173,8 +173,8 @@ spec:
             --override num.partitions=1 \
             --override producer.purgatory.purge.interval.requests=1000 \
             --override replica.fetch.backoff.ms=1000 \
-            --override replica.fetch.max.bytes=1048576 \
-            --override replica.fetch.response.max.bytes=10485760 \
+            --override replica.fetch.max.bytes=10485880 \
+            --override replica.fetch.response.max.bytes=10485880 \
             --override reserved.broker.max.id=1000 "
           volumeMounts:
             - mountPath: /mnt
