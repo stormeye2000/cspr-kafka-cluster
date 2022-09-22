@@ -6,6 +6,8 @@ The following scripts provide a highly available resilient Zookeeper/Kafka clust
 
 Zookeeper runs with three replica pods, which is enough to provide a quorum, if one fails, a new leader will be elected whilst the failed pod is replaced. This is enough for this implementation.
 
+Each service runs in it's own ServiceAccount eg *zookeeper-account* to allow finer grained access control.
+
 Kafka also runs with three replicas (this will be increased in production). 
 
 To install the scripts, clone the project and do the following:
@@ -137,3 +139,57 @@ HOME=/home/kafka
 ```
 
 In the above example of a kafka-broker pod, we can see that that both the ZOOKEEPER_CLIENT_SERVICE_HOST and the ZOOKEEPER_CLIENT_SERVICE_PORT are exposed. These are used in the kafka.yml statefulset to provide access from kafka pods to zookeeper pods via the zookeeper client service.
+
+
+
+## Install Mongo ReplicaSet
+
+The event store uses mongodb for its data storage.
+
+It currently installs two mongo pods, one primary and one secondary. It again is using Kubernetes StatefulSets to give us consistent pod names as in the Kafka and Zookeeper templates above.
+
+Deploy mongo:
+
+```bash
+kubectl apply -f mongo-events.yml
+```
+
+Once the pods are up and running:
+
+```bash
+kubectl get pods --selector=app=mongo-events
+
+NAME             READY   STATUS    RESTARTS   AGE
+mongo-events-0   1/1     Running   0          10s
+mongo-events-1   1/1     Running   0          10s
+```
+
+We need to initiate in mongosh the replication. I haven't yet found a way to automate this (work in progress...) so here are the steps to achieve this:
+
+```bash
+kubectl exec --stdin --tty mongo-events-0 -n kafka -- /bin/bash
+
+root@mongo-events-0:/# mongosh
+
+test> rs.initiate({ _id: "rs0",version: 1,members: [ { _id: 0, host : "mongo-events-1.mongo-events-service:27017" }, { _id: 1, host : "mongo-events-0.mongo-events-service:27017" } ]} )
+
+```
+
+Here we're execing into the pod **mongo-events-0**, running **mongosh** then initiating the replica set **rs0** (defined in mong-events.yml). We're telling mongo that there of two of them and it can then decide which is primary and secondary. The host names are consistent with the mongo statefulset and the mongo service.
+
+Once initiate is executed the json output should contain *ok:1* 
+
+Run *rs.status()* to double check.
+
+Now that we have a mongo replica set up and running in the cluster, clients, such as producers and consumers, can connect and use. The connection string is in this format:
+
+```yaml
+spring:
+  data:
+    mongodb:
+      host: mongo-events-0.mongo-events-service:27017/casper-events,mongo-events-1.mongo-events-service:27017/casper-events
+
+```
+
+ 
+
