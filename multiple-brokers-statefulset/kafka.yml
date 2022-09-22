@@ -1,5 +1,42 @@
 ---
 apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kafka-account
+  namespace: kafka
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kafka-role
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["*"]
+  - apiGroups: [""]
+    resources: ["deployments"]
+    verbs: ["list", "watch"]
+  - apiGroups: [""]
+    resources: ["services"]
+    verbs: ["*"]
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get","list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kafka_role_binding
+subjects:
+  - kind: ServiceAccount
+    name: kafka-account
+    namespace: kafka
+roleRef:
+  kind: ClusterRole
+  name: kafka-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: v1
 kind: Service
 metadata:
   name: kafka-service
@@ -63,6 +100,7 @@ spec:
                         - zk
                 topologyKey: "kubernetes.io/hostname"
       terminationGracePeriodSeconds: 300
+      serviceAccount: kafka-account
       containers:
         - name: storm-kafka
           imagePullPolicy: Always
