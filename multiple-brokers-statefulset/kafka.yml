@@ -132,6 +132,10 @@ spec:
             --override listener.security.protocol.map=INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT \
             --override zookeeper.connect=${ZOOKEEPER_CLIENT_SERVICE_HOST}:${ZOOKEEPER_CLIENT_SERVICE_PORT} \
             --override log.dir=/var/lib/kafka \
+            --override message.max.bytes=1000012 \
+            --override socket.request.max.bytes=104857600 \
+            --override replica.fetch.max.bytes=1048576 \
+            --override replica.fetch.response.max.bytes=10485760 \
             --override auto.create.topics.enable=true \
             --override auto.leader.rebalance.enable=true \
             --override background.threads=10 \
@@ -148,7 +152,6 @@ spec:
             --override log.roll.jitter.hours=0 \
             --override log.segment.bytes=1073741824 \
             --override log.segment.delete.delay.ms=60000 \
-            --override message.max.bytes=10485880 \
             --override min.insync.replicas=1 \
             --override num.io.threads=8 \
             --override num.network.threads=3 \
@@ -175,10 +178,9 @@ spec:
             --override replica.socket.timeout.ms=30000 \
             --override request.timeout.ms=30000 \
             --override socket.receive.buffer.bytes=102400 \
-            --override socket.request.max.bytes=104857600 \
             --override socket.send.buffer.bytes=102400 \
             --override unclean.leader.election.enable=true \
-            --override zookeeper.session.timeout.ms=60000 \
+            --override zookeeper.session.timeout.ms=90000 \
             --override broker.id.generation.enable=true \
             --override connections.max.idle.ms=600000 \
             --override controlled.shutdown.enable=true \
@@ -211,8 +213,6 @@ spec:
             --override num.partitions=1 \
             --override producer.purgatory.purge.interval.requests=1000 \
             --override replica.fetch.backoff.ms=1000 \
-            --override replica.fetch.max.bytes=10485880 \
-            --override replica.fetch.response.max.bytes=10485880 \
             --override reserved.broker.max.id=1000 "
           volumeMounts:
             - mountPath: /mnt
