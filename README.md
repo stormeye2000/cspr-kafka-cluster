@@ -32,7 +32,8 @@ kubectl config set-context --current --namespace kafka
 
 Now deploy Zookeeper:
 
-```
+```bash
+cd kafka
 kubectl apply -f zookeeper.yml
 ```
 
@@ -151,6 +152,7 @@ It currently installs two mongo pods, one primary and one secondary. It again is
 Deploy mongo:
 
 ```bash
+cd mongo
 kubectl apply -f mongo-events.yml
 ```
 
