@@ -195,3 +195,40 @@ spring:
 
  
 
+## Install Postgres 
+
+Postgres is used to store parsed events ready for any UI clients.
+
+[Kubgres](https://github.com/reactive-tech/kubegres),  an open source Kubernetes operator, does all the hard work of creating primary and replica pod instances, along with failover and backups. For now we will be using this.
+
+Both the **replicationUserPassword** and the **superUserPassword** in the postgres.yml secret will need to be changed before applying the postgres.yml file
+
+To install:
+
+```bash
+cd postgres
+
+kubectl apply -f https://raw.githubusercontent.com/reactive-tech/kubegres/main/kubegres.yaml
+
+kubectl apply -f postgres.yml
+
+```
+
+Once the pods have started you'll see the following:
+
+```bash
+kubectl get pods --selector=app=postgres-events
+ 
+NAME                  READY   STATUS    RESTARTS   AGE
+postgres-events-1-0   1/1     Running   0          10s
+postgres-events-2-0   1/1     Running   0          10s
+postgres-events-3-0   1/1     Running   0          10s
+ 
+```
+
+We asked for three replicas in the postgres.yml file. Kubegres interprets this as one primary and two replicas.
+
+So in the above view, pod postgres-events-1-0 is the primary, and pods 2 and 3 replicas.
+
+
+
