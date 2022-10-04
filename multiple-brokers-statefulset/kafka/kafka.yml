@@ -136,7 +136,7 @@ spec:
             --override listener.security.protocol.map=INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT \
             --override zookeeper.connect=${ZOOKEEPER_CLIENT_SERVICE_HOST}:${ZOOKEEPER_CLIENT_SERVICE_PORT} \
             --override log.dir=/var/lib/kafka \
-            --override message.max.bytes=1000012 \
+            --override message.max.bytes=268435456 \
             --override socket.request.max.bytes=104857600 \
             --override replica.fetch.max.bytes=1048576 \
             --override replica.fetch.response.max.bytes=10485760 \
