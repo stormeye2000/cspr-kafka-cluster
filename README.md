@@ -6,14 +6,16 @@ The following scripts provide a highly available resilient Zookeeper/Kafka clust
 
 Zookeeper runs with three replica pods, which is enough to provide a quorum, if one fails, a new leader will be elected whilst the failed pod is replaced. This is enough for this implementation.
 
-Each service runs in it's own ServiceAccount eg *zookeeper-account* to allow finer grained access control.
+Each service runs in its own ServiceAccount eg *zookeeper-account* to allow finer grained access control.
 
 Kafka also runs with three replicas (this will be increased in production). 
+
+We'll use the mini install version which can be used for acceptance testing.
 
 To install the scripts, clone the project and do the following:
 
 ```shell
-cd multiple-brokers-statefulset
+cd multiple-brokers-statefulset/mini
 ```
 
 Note: the single deployment folder is for reference only

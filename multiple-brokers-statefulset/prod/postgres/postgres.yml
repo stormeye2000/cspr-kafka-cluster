@@ -14,10 +14,10 @@ metadata:
   name: postgres-events
   namespace: kafka
 spec:
-  replicas: 3
+  replicas: 5
   image: postgres
   database:
-    size: 20Gi
+    size: 100Gi
   env:
     - name: POSTGRES_PASSWORD
       valueFrom:

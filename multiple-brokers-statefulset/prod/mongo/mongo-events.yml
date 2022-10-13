@@ -65,7 +65,7 @@ metadata:
   namespace: kafka
 spec:
   serviceName: mongo-events-service
-  replicas: 2
+  replicas: 3
   podManagementPolicy: OrderedReady
   selector:
     matchLabels:
@@ -104,5 +104,5 @@ spec:
         accessModes: [ "ReadWriteOnce" ]
         resources:
           requests:
-            storage: 30Gi
+            storage: 100Gi
 
