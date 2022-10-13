@@ -14,7 +14,7 @@ metadata:
   name: postgres-events
   namespace: kafka
 spec:
-  replicas: 2
+  replicas: 3
   image: postgres
   database:
     size: 60Gi
