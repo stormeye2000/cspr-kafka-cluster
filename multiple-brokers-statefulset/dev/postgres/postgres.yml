@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: postgres-secret
-  namespace: kafka
+  namespace: events
 type: Opaque
 stringData:
   superUserPassword: postgresSuperUserPsw
@@ -12,9 +12,9 @@ apiVersion: kubegres.reactive-tech.io/v1
 kind: Kubegres
 metadata:
   name: postgres-events
-  namespace: kafka
+  namespace: events
 spec:
-  replicas: 3
+  replicas: 2
   image: postgres
   database:
     size: 60Gi

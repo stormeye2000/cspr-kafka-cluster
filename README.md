@@ -10,26 +10,29 @@ Each service runs in its own ServiceAccount eg *zookeeper-account* to allow fine
 
 Kafka also runs with three replicas (this will be increased in production). 
 
-We'll use the mini install version which can be used for acceptance testing.
-
 To install the scripts, clone the project and do the following:
 
 ```shell
-cd multiple-brokers-statefulset/mini
+cd multiple-brokers-statefulset
 ```
 
 Note: the single deployment folder is for reference only
 
-If you haven't already created a 'kafka' namespace in your cluster do the following:
+If you haven't already created a 'events' namespace in your cluster do the following:
 
 ```shell
-kubectl apply -f kafka-namespace.yml
+kubectl apply -f events-namespace.yml
 ```
 
-Set the 'kafka' namespace to the current context:
+Set the 'events' namespace to the current context:
 
 ```shell
-kubectl config set-context --current --namespace kafka
+kubectl config set-context --current --namespace events
+```
+
+We'll install the dev version.
+```bash
+cd dev
 ```
 
 Now deploy Zookeeper:
@@ -224,13 +227,12 @@ kubectl get pods --selector=app=postgres-events
 NAME                  READY   STATUS    RESTARTS   AGE
 postgres-events-1-0   1/1     Running   0          10s
 postgres-events-2-0   1/1     Running   0          10s
-postgres-events-3-0   1/1     Running   0          10s
  
 ```
 
-We asked for three replicas in the postgres.yml file. Kubegres interprets this as one primary and two replicas.
+We asked for two replicas in the postgres.yml file. Kubegres interprets this as one primary and one replicas.
 
-So in the above view, pod postgres-events-1-0 is the primary, and pods 2 and 3 replicas.
+So in the above view, pod postgres-events-1-0 is the primary, and pod 2 a replica.
 
 
 

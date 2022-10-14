@@ -4,7 +4,7 @@ metadata:
   labels:
     app: zookeeper1
   name: zookeeper1-service
-  namespace: kafka
+  namespace: events
 spec:
   type: NodePort
   ports:
@@ -21,7 +21,7 @@ metadata:
   labels:
     app: zookeeper2
   name: zookeeper2-service
-  namespace: kafka
+  namespace: events
 spec:
   type: NodePort
   ports:
@@ -38,7 +38,7 @@ metadata:
   labels:
     app: zookeeper3
   name: zookeeper3-service
-  namespace: kafka
+  namespace: events
 spec:
   type: NodePort
   ports:

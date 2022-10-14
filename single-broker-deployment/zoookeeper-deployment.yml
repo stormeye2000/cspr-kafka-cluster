@@ -4,7 +4,7 @@ metadata:
   labels:
     app: zookeeper1
   name: zookeeper1
-  namespace: kafka
+  namespace: events
 spec:
   replicas: 1
   selector:
@@ -38,7 +38,7 @@ metadata:
   labels:
     app: zookeeper2
   name: zookeeper2
-  namespace: kafka
+  namespace: events
 spec:
   replicas: 1
   selector:
@@ -72,7 +72,7 @@ metadata:
   labels:
     app: zookeeper3
   name: zookeeper3
-  namespace: kafka
+  namespace: events
 spec:
   replicas: 1
   selector:

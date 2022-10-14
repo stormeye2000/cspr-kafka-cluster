@@ -3,7 +3,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: zookeeper-account
-  namespace: kafka
+  namespace: events
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -27,11 +27,11 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: zookeeper_role_binding
-  namespace: kafka
+  namespace: events
 subjects:
   - kind: ServiceAccount
     name: zookeeper-account
-    namespace: kafka
+    namespace: events
 roleRef:
   kind: ClusterRole
   name: zookeeper-role
@@ -41,7 +41,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: zookeeper-service
-  namespace: kafka
+  namespace: events
   labels:
     app: zookeeper
 spec:
@@ -58,7 +58,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: zookeeper-client
-  namespace: kafka
+  namespace: events
   labels:
     app: zookeeper
 spec:
@@ -72,24 +72,24 @@ apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
   name: zookeeper-pdb
-  namespace: kafka
+  namespace: events
 spec:
   selector:
     matchLabels:
       app: zookeeper
-  maxUnavailable: 1
+  maxUnavailable: 0
 ---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: zookeeper
-  namespace: kafka
+  namespace: events
 spec:
   selector:
     matchLabels:
       app: zookeeper
   serviceName: zookeeper-service
-  replicas: 3
+  replicas: 1
   updateStrategy:
     type: RollingUpdate
   podManagementPolicy: OrderedReady

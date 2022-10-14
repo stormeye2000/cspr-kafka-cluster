@@ -4,7 +4,7 @@ metadata:
   labels:
     app: kafka-broker
   name: kafka-service
-  namespace: kafka
+  namespace: events
 spec:
   type: NodePort
   ports:

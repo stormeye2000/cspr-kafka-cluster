@@ -3,7 +3,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: kafka-account
-  namespace: kafka
+  namespace: events
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -27,11 +27,11 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: kafka_role_binding
-  namespace: kafka
+  namespace: events
 subjects:
   - kind: ServiceAccount
     name: kafka-account
-    namespace: kafka
+    namespace: events
 roleRef:
   kind: ClusterRole
   name: kafka-role
@@ -41,7 +41,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: kafka-service
-  namespace: kafka
+  namespace: events
   labels:
     app: kafka-broker
 spec:
@@ -56,7 +56,7 @@ apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
   name: kafka-pdb
-  namespace: kafka
+  namespace: events
 spec:
   selector:
     matchLabels:
@@ -67,7 +67,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: kafka-broker
-  namespace: kafka
+  namespace: events
 spec:
   selector:
     matchLabels:
