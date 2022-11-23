@@ -5,8 +5,38 @@ metadata:
   namespace: events
 type: Opaque
 stringData:
-  superUserPassword: postgresSuperUserPsw
-  replicationUserPassword: postgresReplicaPsw
+  superUserPassword: []
+  replicationUserPassword: []
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-conf
+  namespace: events
+data:
+  primary_init_script.sh: |
+    
+    #!/bin/bash
+    set -e
+                            
+    dt=$(date '+%d/%m/%Y %H:%M:%S');
+    echo "$dt - OVERRIDDEN init script to create db and username";
+    
+    customDatabaseName="cspr_event_store"
+    customUserName="cspr_event_store"
+    
+    echo "$dt - Running: psql -v ON_ERROR_STOP=1 --username $POSTGRES_USER --dbname $POSTGRES_DB ...";
+    
+    psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
+    CREATE DATABASE $customDatabaseName;
+    CREATE USER $customUserName WITH PASSWORD '$POSTGRES_PASSWORD';
+    GRANT ALL PRIVILEGES ON DATABASE "$customDatabaseName" to $customUserName;
+    EOSQL
+    
+    echo "$dt - OVERRIDDEN init script is completed";
+    
+
 ---
 apiVersion: kubegres.reactive-tech.io/v1
 kind: Kubegres
@@ -17,7 +47,8 @@ spec:
   replicas: 2
   image: postgres
   database:
-    size: 60Gi
+    size: 30Gi
+  customConfig: postgres-conf
   env:
     - name: POSTGRES_PASSWORD
       valueFrom:
@@ -29,4 +60,5 @@ spec:
         secretKeyRef:
           name: postgres-secret
           key: replicationUserPassword
+
 

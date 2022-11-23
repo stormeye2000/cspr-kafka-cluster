@@ -90,8 +90,6 @@ kubectl logs -l app=kafka-broker --all-containers
 
 ```
 
-
-
 Importantly, the services drive access to the pods:
 
 ```bash
@@ -146,6 +144,16 @@ HOME=/home/kafka
 
 In the above example of a kafka-broker pod, we can see that that both the ZOOKEEPER_CLIENT_SERVICE_HOST and the ZOOKEEPER_CLIENT_SERVICE_PORT are exposed. These are used in the kafka.yml statefulset to provide access from kafka pods to zookeeper pods via the zookeeper client service.
 
+Now we have the kafka brokers we need to create the topics we need for the Event Store. We can also add partitions and replicas at this stage (Note: These will all eventually be in a build script)
+
+```bash
+kubectl exec -it kafka-broker-1 -n events -- ./bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --topic sigs --partitions 2 --replication-factor 2
+
+kubectl exec -it kafka-broker-1 -n events -- ./bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --topic main --partitions 3 --replication-factor 3 --config compression.type=snappy
+
+kubectl exec -it kafka-broker-1 -n events -- ./bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --topic deploys --partitions 3 --replication-factor 3 --config compression.type=snappy
+```
+
 
 
 ## Install Mongo ReplicaSet
@@ -174,7 +182,7 @@ mongo-events-1   1/1     Running   0          10s
 We need to initiate in mongosh the replication. I haven't yet found a way to automate this (work in progress...) so here are the steps to achieve this:
 
 ```bash
-kubectl exec --stdin --tty mongo-events-0 -n kafka -- /bin/bash
+kubectl exec --stdin --tty mongo-events-0 -n events -- /bin/bash
 
 root@mongo-events-0:/# mongosh
 

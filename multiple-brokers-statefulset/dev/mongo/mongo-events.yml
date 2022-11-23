@@ -77,7 +77,7 @@ spec:
         selector: mongo-events
     spec:
       terminationGracePeriodSeconds: 30
-      serviceAccount: mongo-account
+      serviceAccountName: mongo-account
       containers:
         - name: storm-mongodb
           image: docker.io/mongo:6
@@ -86,7 +86,7 @@ spec:
           args: ["-c", "mongod --replSet=rs0 --bind_ip_all"]
           resources:
             requests:
-              cpu: 0.5
+              cpu: "0.5"
               memory: 500Mi
           ports:
             - name: mongo-port

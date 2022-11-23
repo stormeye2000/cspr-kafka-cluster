@@ -104,7 +104,7 @@ spec:
                         - zk
                 topologyKey: "kubernetes.io/hostname"
       terminationGracePeriodSeconds: 300
-      serviceAccount: kafka-account
+      serviceAccountName: kafka-account
       containers:
         - name: storm-kafka
           imagePullPolicy: Always
@@ -217,7 +217,7 @@ spec:
             --override num.partitions=1 \
             --override producer.purgatory.purge.interval.requests=1000 \
             --override replica.fetch.backoff.ms=1000 \
-            --override reserved.broker.max.id=1000 "
+            --override reserved.broker.max.id=1000"
           volumeMounts:
             - mountPath: /mnt
               name: kafka-data
