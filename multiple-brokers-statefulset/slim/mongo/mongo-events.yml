@@ -1,0 +1,108 @@
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: fast
+provisioner: kubernetes.io/gce-pd
+parameters:
+  type: pd-ssd
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: mongo-account
+  namespace: events
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: mongo-role
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["*"]
+  - apiGroups: [""]
+    resources: ["deployments"]
+    verbs: ["list", "watch"]
+  - apiGroups: [""]
+    resources: ["services"]
+    verbs: ["*"]
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get","list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: mongo_role_binding
+subjects:
+  - kind: ServiceAccount
+    name: mongo-account
+    namespace: events
+roleRef:
+  kind: ClusterRole
+  name: mongo-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-events-service
+  namespace: events
+  labels:
+    name: mongo-events-service
+spec:
+  ports:
+    - port: 27017
+      targetPort: 27017
+  clusterIP: None
+  selector:
+    app: mongo-events
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongo-events
+  namespace: events
+spec:
+  serviceName: mongo-events-service
+  replicas: 1
+  podManagementPolicy: OrderedReady
+  selector:
+    matchLabels:
+      app: mongo-events
+  template:
+    metadata:
+      labels:
+        app: mongo-events
+        selector: mongo-events
+    spec:
+      terminationGracePeriodSeconds: 30
+      serviceAccount: mongo-account
+      containers:
+        - name: storm-mongodb
+          image: docker.io/mongo:6
+          env:
+          command: ["/bin/sh"]
+          args: ["-c", "mongod --replSet=rs0 --bind_ip_all"]
+          resources:
+            requests:
+              cpu: 0.5
+              memory: 500Mi
+          ports:
+            - name: mongo-port
+              containerPort: 27017
+          volumeMounts:
+            - name: mongo-persistent-storage
+              mountPath: /data/db
+
+  volumeClaimTemplates:
+    - metadata:
+        name: mongo-persistent-storage
+        annotations:
+          volume.beta.kubernetes.io/storage-class: "fast"
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 30Gi
+

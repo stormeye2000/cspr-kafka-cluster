@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-secret
+  namespace: events
+type: Opaque
+stringData:
+  superUserPassword: postgresSuperUserPsw
+  replicationUserPassword: postgresReplicaPsw
+---
+apiVersion: kubegres.reactive-tech.io/v1
+kind: Kubegres
+metadata:
+  name: postgres-events
+  namespace: events
+spec:
+  replicas: 1
+  image: postgres
+  database:
+    size: 30Gi
+  env:
+    - name: POSTGRES_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: postgres-secret
+          key: superUserPassword
+    - name: POSTGRES_REPLICATION_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: postgres-secret
+          key: replicationUserPassword
+
